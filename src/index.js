@@ -72,6 +72,22 @@ function Menu() {
     <div className="menu">
       <h2>Our Menu</h2>
 
+      {/* ternary operator */}
+      {pizzas.length > 0 ? (
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from. All
+            from out stone oven. all organic all delicious
+          </p>
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizza={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're working on our menu, please come back later :)</p>
+      )}
       {/* (//short circut conditional operation, don't rendering (true, false). //so
       make sure, that condition always return boolean result.)
       {pizzas.length > 0 && (
@@ -84,37 +100,50 @@ function Menu() {
     </div>
   );
 }
-
-function Pizza(props) {
+//{ pizza } this called Distructive
+function Pizza({ pizza }) {
   return (
-    <li className="pizza">
-      <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name} />
-      <div>
-        <h3>{props.pizzaObj.name}</h3>
-        <p>{props.pizzaObj.ingredients}</p>
-        <span>{props.pizzaObj.price}</span>
-      </div>
+    <li className={`pizza ${pizza.soldOut && "sold-out"}`}>
+      <img src={pizza.photoName} alt={pizza.name} />
+      <h3>{pizza.name}</h3>
+      <p>{pizza.ingredients}</p>
+      {pizza.soldOut ? <span>Sold Out</span> : <span>{pizza.price}</span>}
     </li>
   );
 }
 
 function Footer() {
   const hour = new Date().getHours();
-  const openHour = 12;
+  const openHour = 23;
   const closeHour = 22;
   const isOpen = hour >= openHour && hour <= closeHour;
   console.log(isOpen);
   return (
     <footer className="footer">
-      {isOpen && (
+      {isOpen ? (
+        <Order closeHour={closeHour} />
+      ) : (
+        <p>
+          we are waiting you between {openHour}:00. and {closeHour}:00.
+        </p>
+      )}
+      {/* {isOpen && (
         <div className="order">
           <p>We're open until {closeHour}:00. come visit us or order online</p>
           <button className="btn">Order</button>
         </div>
-      )}
+      )} */}
     </footer>
   );
 }
 
+function Order({ closeHour }) {
+  return (
+    <div className="order">
+      <p>We're open until {closeHour}:00. come visit us or order online</p>
+      <button className="btn">Order</button>
+    </div>
+  );
+}
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
